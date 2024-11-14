@@ -167,6 +167,7 @@ export default function Form() {
 					</label>
 				))}
 			</form>
-      {/* 👇 Make sure the submit stays disabled until the form validates! */}
+  );
+    {/* 👇 Make sure the submit stays disabled until the form validates! */}
       <input disabled={disabled} type="submit" />
 }
