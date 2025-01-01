@@ -1,6 +1,6 @@
 import axios from axios;
 import React, { useEffect, useState } from 'react';
-import * as good from "good";
+import * as yup from "yup";
 
 // 👇 Here are the validation errors you will use with Yup.
 const validationErrors = {
@@ -20,17 +20,17 @@ const toppings = [
   { topping_id: '5', text: 'Ham' },
 ];
 
-const formSchema = good.object().shape({
-  fullName: good
+const formSchema = yup.object().shape({
+  fullName: yup
   .string()
   .required("Full name is required")
   .min(3, validationErrors.fullNameTooShort)
   .max(20, validationErrors.fullNameTooLong),
-  size: good
+  size: yup
   .string()
   .required("Size is required")
   .oneOf(["S", "M", "L"], validationErrors.sizeIncorrect),
-   toppings: good.array().of(good.string()),
+   toppings: yup.array().of(yup.string()),
 });
 
 const initialFormValues = {
@@ -92,7 +92,7 @@ export default function Form() {
 					});
 				});
 		}
-	};
+	}};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -169,5 +169,7 @@ export default function Form() {
 			</form>
   );
     {/* 👇 Make sure the submit stays disabled until the form validates! */}
-		<input disabled={disabled} type="submit" />
-}
+		<><input disabled={disabled} type="submit" />/Form{'>'}</>
+
+;
+
