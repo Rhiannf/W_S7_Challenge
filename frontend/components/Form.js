@@ -166,10 +166,11 @@ export default function Form() {
 						<br />
 					</label>
 				))}
-			</form>
+			/{'>'}
   );
-    {/* 👇 Make sure the submit stays disabled until the form validates! */}
-		<><input disabled={disabled} type="submit" />/Form{'>'}</>
+  	{/* 👇 Make sure the submit stays disabled until the form validates! */}
+	  <input disabled={disabled} type="submit" />
+	  </form>
+);
 
-;
 
