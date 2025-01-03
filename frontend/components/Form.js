@@ -1,4 +1,4 @@
-import axios from axios;
+import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import * as yup from "yup";
 
@@ -48,7 +48,7 @@ const initalErrors = {
 
 export default function Form() {
   const [formValues, setFormValues] = useState(initialFormValues);
-	const [errors, setErrors] = useState(initialErrors);
+	const [errors, setErrors] = useState(initalErrors);
 	const [successMessage, setSuccessMessage] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
 	const [disabled, setDisabled] = useState(true);
@@ -167,7 +167,7 @@ export default function Form() {
 					</label>
 				))}
 			/{'>'}
-  );
+  ;
   	{/* 👇 Make sure the submit stays disabled until the form validates! */}
 	  <input disabled={disabled} type="submit" />
 	  </form>
