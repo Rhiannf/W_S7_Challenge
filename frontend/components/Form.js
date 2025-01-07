@@ -1,6 +1,6 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import * as yup from "yup";
+import axios from "axios";
 
 // 👇 Here are the validation errors you will use with Yup.
 const validationErrors = {
@@ -11,90 +11,65 @@ const validationErrors = {
 
 // 👇 Here you will create your schema.
 
-const formSchema = yup.object().shape({
-		fullName: yup
-		  .string()
-	.required("Full name is required")
-		  .min(3, validationErrors.fullNameTooShort)
-	.max(20, validationErrors.fullNameTooLong),
-	size: yup
-	.string()
-	.required("Size is required")
-	.oneOf(["S", "M", "L"], validationErrors.sizeIncorrect),
-	 toppings: yup.array().of(yup.string()),
-	  });
-  
-  const initialFormValues = {
-	fullName: "",
-	size: "",
-	toppings: [],
-  
-  };
-  
-  const initalErrors = {
-	fullName: "",
-	size: "",
-	  
-  };
 
 
 // 👇 This array could help you construct your checkboxes using .map in the JSX.
 const toppings = [
-  { topping_id: '1', text: 'Pepperoni' },
-  { topping_id: '2', text: 'Green Peppers' },
-  { topping_id: '3', text: 'Pineapple' },
-  { topping_id: '4', text: 'Mushrooms' },
-  { topping_id: '5', text: 'Ham' },
+	{ topping_id: "1", text: "Pepperoni" },
+	{ topping_id: "2", text: "Green Peppers" },
+	{ topping_id: "3", text: "Pineapple" },
+	{ topping_id: "4", text: "Mushrooms" },
+	{ topping_id: "5", text: "Ham" },
 ];
 
-	export default function Form() {
-	const [formValues, setValues] = useState(initialFormValues);
-	const [errorMessage, setErrors] = useState(initalErrors);
-	  
-	const [successMessage, setSuccess] = useState("");
-	const [failure, setFailure] = useState("");
-	const [enabled, setEnabled] = useState(false);
-	  
-		useEffect(() => {
-		  formSchema.isValid(values).then((isValid) => {
-			setEnabled(isValid);
-		  });
+const formSchema = yup.object().shape({
+	fullName: yup
+		.string()
+		.required("Full name is required")
+		.min(3, validationErrors.fullNameTooShort)
+		.max(20, validationErrors.fullNameTooLong),
+	size: yup
+		.string()
+		.required("Size is required")
+		.oneOf(["S", "M", "L"], validationErrors.sizeIncorrect),
+	toppings: yup.array().of(yup.string()),
+});
+
+const initialFormValues = {
+	fullName: "",
+	size: "",
+	toppings: [],
+};
+
+const initialErrors = {
+	fullName: "",
+	size: "",
+};
+
+export default function Form() {
+	const [formValues, setFormValues] = useState(initialFormValues);
+	const [errors, setErrors] = useState(initialErrors);
+	const [successMessage, setSuccessMessage] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
+	const [disabled, setDisabled] = useState(true);
+
+	useEffect(() => {
+		formSchema.isValid(formValues).then((valid) => {
+			setDisabled(!valid);
+		});
 	}, [formValues]);
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		axios
-		  .post("http://localhost:9009/api/order", formValues)
-	
-		  .then((res) => {
-			setSuccess(res.data.message);
-			formValues(initialFormValues);
-			setFailure("");
-		  })
-		  .catch((res) => {
-			setFailure(res.response.data.message);
-			errorMessage(err.response.data.message);
-			formValues(initialFormValues);
-		  });
-	
-		setValues({
-		  fullName: "",
-		  size: "",
-		  toppings: [],
-		});
-	  };
-
-	  const handleChange = (e) => {
+	const handleChange = (e) => {
 		const { name, value, checked, type } = e.target;
 		if (type === "checkbox") {
-			formValues({
+			setFormValues({
 				...formValues,
 				toppings: checked
 					? [...formValues.toppings, value]
 					: formValues.toppings.filter((topping) => topping !== value),
 			});
 		} else {
-			formValues({
+			setFormValues({
 				...formValues,
 				[name]: value,
 			});
@@ -119,6 +94,21 @@ const toppings = [
 		}
 	};
 
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		axios
+			.post("http://localhost:9009/api/order", formValues)
+			.then((res) => {
+				setSuccessMessage(res.data.message);
+				setErrorMessage("");
+				setFormValues(initialFormValues);
+			})
+			.catch((err) => {
+				setErrorMessage(err.response.data.message);
+				setSuccessMessage("");
+				setFormValues(initialFormValues);
+			});
+	};
 
 	return (
 		<form onSubmit={handleSubmit}>
@@ -139,7 +129,7 @@ const toppings = [
 						type="text"
 					/>
 				</div>
-				{failure.fullName && <div className="error">{failure.fullName}</div>}
+				{errors.fullName && <div className="error">{errors.fullName}</div>}
 			</div>
 
 			<div className="input-group">
@@ -158,13 +148,12 @@ const toppings = [
 						<option value="L">Large</option>
 					</select>
 				</div>
-				{setErrors.size && <div className="error">{setErrors.size}</div>}
+				{errors.size && <div className="error">{errors.size}</div>}
 			</div>
 
-			<div className="input-group"></div>
-		
-        {/* 👇 Maybe you could generate the checkboxes dynamically */}
-        {toppings.map((topping) => (
+			<div className="input-group">
+				{/* 👇 Maybe you could generate the checkboxes dynamically */}
+				{toppings.map((topping) => (
 					<label key={topping.topping_id}>
 						<input
 							onChange={handleChange}
@@ -177,10 +166,10 @@ const toppings = [
 						<br />
 					</label>
 				))}
-			/{'>'}
-  ;
+			</div>
+  
   	{/* 👇 Make sure the submit stays disabled until the form validates! */}
-	  <input value="submit" disabled={!enabled} type="submit" />
+	  <input disabled={disabled} type="submit" />
 	  </form>
 
 )};

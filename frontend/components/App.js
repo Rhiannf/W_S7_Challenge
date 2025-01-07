@@ -2,7 +2,8 @@ import React from 'react'
 import Home from './Home'
 import Form from './Form'
 import { NavLink } from 'react-router-dom';
-import { Routes, Route } from 'react-router-dom';
+import {Routes, Route } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function App() {
   return (
@@ -19,8 +20,8 @@ function App() {
       </nav>
       {/* Route and Routes here */}
       <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/order' element={<Form />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/order" element={<Form />} />
       </Routes>
       
     </div>
