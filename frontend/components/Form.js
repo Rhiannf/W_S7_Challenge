@@ -104,7 +104,7 @@ export default function Form() {
 				setFormValues(initialFormValues);
 			})
 			.catch((err) => {
-				setErrorMessage(err.response.data.message);
+				setErrorMessage(err.response);
 				setSuccessMessage("");
 				setFormValues(initialFormValues);
 			});
