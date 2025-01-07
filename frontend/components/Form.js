@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import * as yup from "yup";
 
@@ -12,17 +12,17 @@ const validationErrors = {
 // 👇 Here you will create your schema.
 
 const formSchema = yup.object().shape({
-	fullName: yup
-	.string()
+		fullName: yup
+		  .string()
 	.required("Full name is required")
-	.min(3, validationErrors.fullNameTooShort)
+		  .min(3, validationErrors.fullNameTooShort)
 	.max(20, validationErrors.fullNameTooLong),
 	size: yup
 	.string()
 	.required("Size is required")
 	.oneOf(["S", "M", "L"], validationErrors.sizeIncorrect),
 	 toppings: yup.array().of(yup.string()),
-  });
+	  });
   
   const initialFormValues = {
 	fullName: "",
@@ -34,7 +34,7 @@ const formSchema = yup.object().shape({
   const initalErrors = {
 	fullName: "",
 	size: "",
-  
+	  
   };
 
 
@@ -47,18 +47,18 @@ const toppings = [
   { topping_id: '5', text: 'Ham' },
 ];
 
-export default function Form() {
+	export default function Form() {
 	const [formValues, setValues] = useState(initialFormValues);
 	const [errorMessage, setErrors] = useState(initalErrors);
-  
+	  
 	const [successMessage, setSuccess] = useState("");
 	const [failure, setFailure] = useState("");
-	const [disabled, setEnabled] = useState(false);
-  
-	useEffect(() => {
-	  formSchema.isValid(values).then((isValid) => {
-		setEnabled(isValid);
-	  });
+	const [enabled, setEnabled] = useState(false);
+	  
+		useEffect(() => {
+		  formSchema.isValid(values).then((isValid) => {
+			setEnabled(isValid);
+		  });
 	}, [formValues]);
 
 	const handleSubmit = (e) => {
@@ -180,7 +180,7 @@ export default function Form() {
 			/{'>'}
   ;
   	{/* 👇 Make sure the submit stays disabled until the form validates! */}
-	  <input disabled={disabled} type="submit" />
+	  <input value="submit" disabled={!enabled} type="submit" />
 	  </form>
 
 )};
