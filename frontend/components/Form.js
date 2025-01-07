@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as yup from "yup";
 
 // 👇 Here are the validation errors you will use with Yup.
@@ -48,31 +48,33 @@ const toppings = [
 ];
 
 export default function Form() {
-	const [values, setValues] = useState(initialFormValues);
-	const [errors, setErrors] = useState(initalErrors);
+	const [formValues, setValues] = useState(initialFormValues);
+	const [errorMessage, setErrors] = useState(initalErrors);
   
-	const [success, setSuccess] = useState("");
+	const [successMessage, setSuccess] = useState("");
 	const [failure, setFailure] = useState("");
-	const [enabled, setEnabled] = useState(false);
+	const [disabled, setEnabled] = useState(false);
   
 	useEffect(() => {
 	  formSchema.isValid(values).then((isValid) => {
 		setEnabled(isValid);
 	  });
-	}, [values]);
+	}, [formValues]);
 
-	const handleSubmit = (evt) => {
-		evt.preventDefault();
-		const { fullName, size, toppings } = values;
+	const handleSubmit = (e) => {
+		e.preventDefault();
 		axios
-		  .post("http://localhost:9009/api/order", values)
+		  .post("http://localhost:9009/api/order", formValues)
 	
 		  .then((res) => {
 			setSuccess(res.data.message);
+			formValues(initialFormValues);
 			setFailure("");
 		  })
 		  .catch((res) => {
 			setFailure(res.response.data.message);
+			errorMessage(err.response.data.message);
+			formValues(initialFormValues);
 		  });
 	
 		setValues({
@@ -82,21 +84,41 @@ export default function Form() {
 		});
 	  };
 
-	  const handleChange = (evt) => {
-		let { type, checked, name, value } = evt.target;
-	
+	  const handleChange = (e) => {
+		const { name, value, checked, type } = e.target;
 		if (type === "checkbox") {
-		  const toppingId = name; // Use the checkbox name as the topping ID
-		  const updatedToppings = checked
-			? [...values.toppings, toppingId] // Add the topping if checked
-			: values.toppings.filter((id) => id !== toppingId); // Remove if unchecked
-	
-		  setValues({ ...values, toppings: updatedToppings });
+			formValues({
+				...formValues,
+				toppings: checked
+					? [...formValues.toppings, value]
+					: formValues.toppings.filter((topping) => topping !== value),
+			});
 		} else {
-		  setValues({ ...values, [name]: value });
+			formValues({
+				...formValues,
+				[name]: value,
+			});
 		}
-	}
-};
+
+		if (name === "fullName" || name === "size") {
+			yup
+				.reach(formSchema, name)
+				.validate(value.trim())
+				.then(() => {
+					setErrors({
+						...errors,
+						[name]: "",
+					});
+				})
+				.catch((err) => {
+					setErrors({
+						...errors,
+						[name]: err.errors[0],
+					});
+				});
+		}
+	};
+
 
 	return (
 		<form onSubmit={handleSubmit}>
@@ -117,7 +139,7 @@ export default function Form() {
 						type="text"
 					/>
 				</div>
-				{errors.fullName && <div className="error">{errors.fullName}</div>}
+				{failure.fullName && <div className="error">{failure.fullName}</div>}
 			</div>
 
 			<div className="input-group">
@@ -136,10 +158,11 @@ export default function Form() {
 						<option value="L">Large</option>
 					</select>
 				</div>
-				{errors.size && <div className="error">{errors.size}</div>}
+				{setErrors.size && <div className="error">{setErrors.size}</div>}
 			</div>
 
 			<div className="input-group"></div>
+		
         {/* 👇 Maybe you could generate the checkboxes dynamically */}
         {toppings.map((topping) => (
 					<label key={topping.topping_id}>
@@ -159,6 +182,8 @@ export default function Form() {
   	{/* 👇 Make sure the submit stays disabled until the form validates! */}
 	  <input disabled={disabled} type="submit" />
 	  </form>
-);
+
+)};
+
 
 
