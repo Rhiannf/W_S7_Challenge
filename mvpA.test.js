@@ -13,12 +13,12 @@ cg-jest run -- mvpB.test.js --runInBand --forceExit
 4- Fixtures
 mvpA.test.js
 */
-import React from 'react'
-import App from './frontend/components/App'
-import { BrowserRouter as Router } from 'react-router-dom'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import server from './backend/mock-server'
+import React from 'react';
+import App from './frontend/components/App';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import server from './backend/mock-server';
 
 jest.setTimeout(750) // default 5000 too long for Codegrade
 
