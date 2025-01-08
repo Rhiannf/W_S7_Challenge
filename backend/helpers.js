@@ -1,4 +1,4 @@
-import { object, string, array, number } from 'yup'
+const yup = require('yup')
 
 const e = {
   fullNameType: 'fullName must be a string',
@@ -27,13 +27,13 @@ const sizes = {
   L: 'large',
 }
 
-const pizzaSchema = object().shape({
-  fullName: string().typeError(e.fullNameType).trim()
+const pizzaSchema = yup.object().shape({
+  fullName: yup.string().typeError(e.fullNameType).trim()
     .required(e.fullNameRequired).min(3, e.fullNameMin).max(20, e.fullNameMax),
-  size: string().oneOf(['S', 'M', 'L'], e.sizeOptions).required(e.sizeRequired).trim(),
-  toppings: array().typeError(e.toppingsType)
+  size: yup.string().oneOf(['S', 'M', 'L'], e.sizeOptions).required(e.sizeRequired).trim(),
+  toppings: yup.array().typeError(e.toppingsType)
     .of(
-      number().typeError(e.toppingsType)
+      yup.number().typeError(e.toppingsType)
         .integer(e.toppingsType)
         .min(1, e.toppingInvalid)
         .max(5, e.toppingInvalid)
@@ -80,6 +80,6 @@ topping${valid.toppings?.length === 1 ? '' : 's'} is on the way.`,
   return result
 }
 
-export default {
+module.exports = {
   postPizza,
 }

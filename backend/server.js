@@ -1,25 +1,25 @@
 const express = require('express')
-import cors from 'cors'
-import { join } from 'path'
-import { postPizza } from './helpers'
+const cors = require('cors')
+const path = require('path')
+const Pizza = require('./helpers')
 
 const PORT = process.env.PORT || 9009
 
 const server = express()
 
-server.use(json())
+server.use(express.json())
 
-server.use(express.static(join(__dirname, '../dist')))
+server.use(express.static(path.join(__dirname, '../dist')))
 
 server.use(cors())
 
 server.post('/api/order', async (req, res) => {
-  const { status, data } = await postPizza(req.body)
+  const { status, data } = await Pizza.postPizza(req.body)
   res.status(status).json(data)
 })
 
 server.get('*', (req, res) => {
-  res.sendFile(join(__dirname, '../dist/index.html'))
+  res.sendFile(path.join(__dirname, '../dist/index.html'))
 })
 
 server.use((req, res) => {
