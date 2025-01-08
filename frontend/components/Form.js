@@ -97,7 +97,7 @@ export default function Form() {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		axios
-			.post("http://localhost:9009/api/", formValues)
+			.post("http://localhost:9009/api/order", formValues)
 			.then((res) => {
 				setSuccessMessage(res.data.message);
 				setErrorMessage("");
@@ -147,7 +147,7 @@ export default function Form() {
 						<option value="M">Medium</option>
 						<option value="L">Large</option>
 					</select>
-				</div>order
+				</div>
 				{errors.size && <div className="error">{errors.size}</div>}
 			</div>
 
